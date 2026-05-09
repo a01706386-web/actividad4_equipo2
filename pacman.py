@@ -53,6 +53,7 @@ tiles = [
 
 def square(x, y):
     """Draw square using path at (x, y)."""
+    # Draws a single 20x20 pixel square. Used to build the paths of the maze.
     path.up()
     path.goto(x, y)
     path.down()
@@ -67,6 +68,7 @@ def square(x, y):
 
 def offset(point):
     """Return offset of point in tiles."""
+    # Converts a 2D (x,y) screen coordinate into a 1D index to locate it within the 'tiles' list.
     x = (floor(point.x, 20) + 200) / 20
     y = (180 - floor(point.y, 20)) / 20
     index = int(x + y * 20)
@@ -75,6 +77,7 @@ def offset(point):
 
 def valid(point):
     """Return True if point is valid in tiles."""
+    # Checks if a specific coordinate is a walkable path (tile > 0) and not a wall (tile == 0).
     index = offset(point)
 
     if tiles[index] == 0:
@@ -91,8 +94,10 @@ def valid(point):
 def world():
     """Draw world using path."""
     bgcolor('black')
+    # CHANGED: The track color was modified from 'blue' to 'green' here.
     path.color('green')
 
+    # Loops through the tiles array to draw the physical layout of the maze.
     for index in range(len(tiles)):
         tile = tiles[index]
 
@@ -109,6 +114,7 @@ def world():
 
 def move():
     """Move pacman and all ghosts."""
+    # Main game loop: handles movement, eating dots, score updating, and collision detection.
     writer.undo()
     writer.write(state['score'])
 
@@ -119,6 +125,7 @@ def move():
 
     index = offset(pacman)
 
+    # If Pacman eats a dot (tile == 1), remove the dot (set to 2) and increase the score.
     if tiles[index] == 1:
         tiles[index] = 2
         state['score'] += 1
@@ -130,6 +137,7 @@ def move():
     goto(pacman.x + 10, pacman.y + 10)
     dot(20, 'yellow')
 
+    # Ghost movement logic: they move in a straight line until they hit a wall, then pick a random valid direction.
     for point, course in ghosts:
         if valid(point + course):
             point.move(course)
@@ -150,6 +158,7 @@ def move():
 
     update()
 
+    # Collision detection: Game over if Pacman gets too close to a ghost.
     for point, course in ghosts:
         if abs(pacman - point) < 20:
             return
@@ -159,11 +168,13 @@ def move():
 
 def change(x, y):
     """Change pacman aim if valid."""
+    # Updates Pacman's intended direction if the new path isn't blocked by a wall.
     if valid(pacman + vector(x, y)):
         aim.x = x
         aim.y = y
 
 
+# Screen setup, game initialization, and keyboard event bindings.
 setup(420, 420, 370, 0)
 hideturtle()
 tracer(False)
