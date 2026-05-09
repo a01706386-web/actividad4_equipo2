@@ -49,10 +49,10 @@ def move():
         snake.pop(0)
 
     clear()
-
+# Changes the color of the snake to green. 
     for body in snake:
         square(body.x, body.y, 9, 'black')
-
+# Changes the color of the food to red.
     square(food.x, food.y, 9, 'green')
     update()
     ontimer(move, 100)
